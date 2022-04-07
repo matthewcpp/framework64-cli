@@ -1,0 +1,22 @@
+{
+  "name": "framework64-create",
+  "version": "1.0.0",
+  "description": "Utility to create new framework64 games.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matthewcpp/framework64-create.git"
+  },
+  "author": "Matthew LaRocca",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/matthewcpp/framework64-create/issues"
+  },
+  "homepage": "https://github.com/matthewcpp/framework64-create#readme",
+  "dependencies": {
+    "commander": "^9.1.0"
+  }
+}
