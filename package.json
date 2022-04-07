@@ -1,21 +1,23 @@
 {
-  "name": "framework64-create",
+  "name": "framework64-cli",
   "version": "1.0.0",
   "description": "Utility to create new framework64 games.",
-  "main": "main.js",
+  "bin": {
+    "framework64-cli": "framework64-cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/matthewcpp/framework64-create.git"
+    "url": "git+https://github.com/matthewcpp/framework64-cli.git"
   },
   "author": "Matthew LaRocca",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/matthewcpp/framework64-create/issues"
+    "url": "https://github.com/matthewcpp/framework64-cli/issues"
   },
-  "homepage": "https://github.com/matthewcpp/framework64-create#readme",
+  "homepage": "https://github.com/matthewcpp/framework64-cli#readme",
   "dependencies": {
     "commander": "^9.1.0"
   }
