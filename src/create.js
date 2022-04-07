@@ -22,13 +22,17 @@ function create(name, projectDir, options) {
 
     checkSpawnResult(spawnSync("git", ["submodule", "add", framework64Repo, "lib/framework64"], {cwd: projectDir}), "Add framework64 submodule");
     checkSpawnResult(spawnSync("git", ["submodule", "init"], {cwd: projectDir}), "Initialize framework64 submodule");
-    checkSpawnResult(spawnSync("git", ["add", "-A"], {cwd: projectDir}), null);
-    checkSpawnResult(spawnSync("git", ["commit", "-m", "Add framework64 submodule"], {cwd: projectDir}), "Create initial commit");
+    checkSpawnResult(spawnSync("git", ["add", ".gitmodules"], {cwd: projectDir}), null);
 
     if (options.hasOwnProperty("branch")) {
-        const branch = options.branch;
-        console.log(`checkout branch: : ${branch}`)
+        const submoduleDir = path.join(libDir, "framework64");
+        checkSpawnResult(spawnSync("git", ["checkout", "-b", options.branch], {cwd: submoduleDir}), `Checkout framework64 branch: ${options.branch}`);
+        checkSpawnResult(spawnSync("git", ["add", "lib/framework64"], {cwd: projectDir}), null);
     }
+
+    checkSpawnResult(spawnSync("git", ["commit", "-m", "Add framework64 submodule"], {cwd: projectDir}), "Create initial commit");
+
+
 }
 
 
