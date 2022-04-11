@@ -2,7 +2,7 @@
   "name": "@matthewcpp/framework64-cli",
   "version": "1.0.0",
   "description": "Utility to create new framework64 games.",
-  "main": "./src/main.js",
+  "main": "./index.js",
   "bin": {
     "framework64-cli": "./bin/framework64-cli.js"
   },

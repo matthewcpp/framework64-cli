@@ -4,9 +4,11 @@ const {spawnSync} = require("child_process");
 
 const framework64Repo ="https://github.com/matthewcpp/framework64.git";
 
-let logStdOut = true;
-
 function create(name, projectDir, options) {
+    const libDir = path.join(projectDir, "lib");
+    const submoduleDir = path.join(libDir, "framework64");
+    const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+
     if (fs.existsSync(projectDir)) {
         console.log(`framework64 project directory: ${projectDir}`);
     }
@@ -15,32 +17,49 @@ function create(name, projectDir, options) {
         process.exit(1);
     }
 
-    checkSpawnResult(spawnSync("git", ["status"], {cwd: projectDir}), `Check for git repository in ${projectDir}`);
+    const gitStatusResult = spawnSync("git", ["status"], {cwd: projectDir})
 
-    const libDir = path.join(projectDir, "lib");
+    if (options.init && gitStatusResult.status != 0) {
+        runSyncCommand("git", ["init"], {cwd: projectDir}, "Initialize git repository in project directory", options);
+    }
+    else {
+        checkSpawnResult(gitStatusResult, `Check for git repository in ${projectDir}`, options);
+    }
+
     if (!fs.existsSync(libDir)) {
         fs.mkdirSync(libDir);
     }
 
-    const submoduleDir = path.join(libDir, "framework64");
-
-    checkSpawnResult(spawnSync("git", ["submodule", "add", framework64Repo, "lib/framework64"], {cwd: projectDir}), "Add framework64 submodule");
-    checkSpawnResult(spawnSync("git", ["submodule", "init"], {cwd: projectDir}), "Initialize framework64 submodule");
-    checkSpawnResult(spawnSync("git", ["add", ".gitmodules"], {cwd: projectDir}), null);
+    runSyncCommand("git", ["submodule", "add", framework64Repo, "lib/framework64"], {cwd: projectDir}, "Add framework64 submodule", options);
+    runSyncCommand("git", ["submodule", "init"], {cwd: projectDir}, "Initialize framework64 submodule", options);
+    runSyncCommand("git", ["add", ".gitmodules"], {cwd: projectDir}, null, options);
 
     if (options.hasOwnProperty("branch")) {
-        checkSpawnResult(spawnSync("git", ["checkout", options.branch], {cwd: submoduleDir}), `Checkout framework64 branch: ${options.branch}`);
-        checkSpawnResult(spawnSync("git", ["add", "lib/framework64"], {cwd: projectDir}), null);
+        runSyncCommand("git", ["checkout", options.branch], {cwd: submoduleDir}, `Checkout framework64 branch: ${options.branch}`, options);
+        runSyncCommand("git", ["add", "lib/framework64"], {cwd: projectDir}, null, options);
     }
 
-    checkSpawnResult(spawnSync("git", ["commit", "-m", "Add framework64 submodule"], {cwd: projectDir}), "Create initial commit");
+    runSyncCommand("git", ["commit", "-m", "Add framework64 submodule"], {cwd: projectDir}, "Create initial commit", options);
 
-    checkSpawnResult(spawnSync("npm", ["run", "--prefix", "lib/framework64", "create-game", name, projectDir], {cwd: projectDir}), `Create game: ${name}`);
+    runSyncCommand(npmCommand, ["run", "--prefix", "lib/framework64", "create-game", name, projectDir], {cwd: projectDir}, `Run create-game script from framework64 repo`, options);
 }
 
+function runSyncCommand(command, args, env, description, options) {
+    if (options.verbose) {
+        console.log(`Run Command: ${command} ${args.join(' ')} ${JSON.stringify(env)}`)
+    }
 
-function checkSpawnResult(result, description) {
-    if (logStdOut && result.stdout) {
+    if (description) {
+        console.log(description);
+    }
+
+    const result = spawnSync(command, args, env)
+
+    checkSpawnResult(result, description, options);
+}
+
+function checkSpawnResult(result, description, options) {
+    if (options.verbose && result.stdout) {
         console.log(result.stdout.toString());
     }
 
@@ -57,7 +76,7 @@ function checkSpawnResult(result, description) {
     if (result.stderr && result.stderr.length > 0) 
         console.error(result.stderr.toString());
 
-    process.exit(1);
+    throw new Error("Failed to create new Project");
 }
 
 module.exports = create;
