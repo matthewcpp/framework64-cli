@@ -9,6 +9,8 @@ function create(name, projectDir, options) {
     const submoduleDir = path.join(libDir, "framework64");
     const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
+    console.log(`Creating framework64 game: ${name}`);
+
     if (fs.existsSync(projectDir)) {
         console.log(`framework64 project directory: ${projectDir}`);
     }
