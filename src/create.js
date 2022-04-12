@@ -4,7 +4,7 @@ const {spawnSync} = require("child_process");
 
 const framework64Repo ="https://github.com/matthewcpp/framework64.git";
 
-function create(name, projectDir, options) {
+function create(projectDir, name, options) {
     const libDir = path.join(projectDir, "lib");
     const submoduleDir = path.join(libDir, "framework64");
     const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';

@@ -4,23 +4,26 @@ const { program } = require("commander");
 
 const path = require("path");
 
+function commandCreate(directory, name) {
+    const projectDir = (!!directory) ? directory : process.cwd();
+    const projectName = (!!name) ? name : path.basename(process.cwd());
+    
+    try {
+        require("../src/create")(projectDir, projectName, program.opts());
+    }
+    catch(e) {
+        console.log("Fatal Error:" + e);
+    }
+}
+
 program
     .name("framework64-cli")
-    .version("1.0.0")
+    .version("0.0.1")
     .description("Initializes a new framework64 game");
 
 program
-    .command("create [name] [directory]")
-    .action((name, directory) => {
-        const projectName = (!!name) ? name : path.basename(process.cwd());
-        const projectDir = (!!directory) ? directory : process.cwd();
-        try {
-            require("../src/create")(projectName, projectDir, program.opts());
-        }
-        catch(e) {
-            console.log("Fatal Error:" + e);
-        }
-    });
+    .command("create [directory] [name]")
+    .action(commandCreate);
 
 program
     .option("--branch <branch>", "framework64 branch to checkout upon submodule initialization")
