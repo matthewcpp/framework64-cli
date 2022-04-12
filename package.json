@@ -1,6 +1,6 @@
 {
   "name": "@matthewcpp/framework64-cli",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "framework64 command line utility",
   "main": "./index.js",
   "bin": {
