@@ -1,17 +1,21 @@
-const fs = require("fs");
+const download = require("download");
+const tmp = require('tmp');
+const fse = require("fs-extra");
+
 const path = require("path");
 const {spawnSync} = require("child_process");
 
 const framework64Repo ="https://github.com/matthewcpp/framework64.git";
+const framework64StarterUrlBase = "https://github.com/matthewcpp/framework64-starter/archive/refs/heads/";
 
-function create(projectDir, name, options) {
+async function create(projectDir, name, options) {
     const libDir = path.join(projectDir, "lib");
     const submoduleDir = path.join(libDir, "framework64");
     const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
     console.log(`Creating framework64 game: ${name}`);
 
-    if (fs.existsSync(projectDir)) {
+    if (fse.existsSync(projectDir)) {
         console.log(`framework64 project directory: ${projectDir}`);
     }
     else {
@@ -22,31 +26,56 @@ function create(projectDir, name, options) {
     const gitStatusResult = spawnSync("git", ["status"], {cwd: projectDir})
 
     if (options.init && gitStatusResult.status != 0) {
-        runSyncCommand("git", ["init"], {cwd: projectDir}, "Initialize git repository in project directory", options);
+        spawnSyncCommand("git", ["init"], {cwd: projectDir}, "Initialize git repository in project directory", options);
     }
     else {
         checkSpawnResult(gitStatusResult, `Check for git repository in ${projectDir}`, options);
     }
 
-    if (!fs.existsSync(libDir)) {
-        fs.mkdirSync(libDir);
+    if (!fse.existsSync(libDir)) {
+        fse.mkdirSync(libDir);
     }
 
-    runSyncCommand("git", ["submodule", "add", framework64Repo, "lib/framework64"], {cwd: projectDir}, "Add framework64 submodule", options);
-    runSyncCommand("git", ["submodule", "init"], {cwd: projectDir}, "Initialize framework64 submodule", options);
-    runSyncCommand("git", ["add", ".gitmodules"], {cwd: projectDir}, null, options);
+    spawnSyncCommand("git", ["submodule", "add", framework64Repo, "lib/framework64"], {cwd: projectDir}, "Add framework64 submodule", options);
+    spawnSyncCommand("git", ["submodule", "init"], {cwd: projectDir}, "Initialize framework64 submodule", options);
+    spawnSyncCommand("git", ["add", ".gitmodules"], {cwd: projectDir}, null, options);
 
     if (options.hasOwnProperty("branch")) {
-        runSyncCommand("git", ["checkout", options.branch], {cwd: submoduleDir}, `Checkout framework64 branch: ${options.branch}`, options);
-        runSyncCommand("git", ["add", "lib/framework64"], {cwd: projectDir}, null, options);
+        spawnSyncCommand("git", ["checkout", options.branch], {cwd: submoduleDir}, `Checkout framework64 branch: ${options.branch}`, options);
+        spawnSyncCommand("git", ["add", "lib/framework64"], {cwd: projectDir}, null, options);
     }
 
-    runSyncCommand("git", ["commit", "-m", "Add framework64 submodule"], {cwd: projectDir}, "Create initial commit", options);
+    spawnSyncCommand("git", ["commit", "-m", "Add framework64 submodule"], {cwd: projectDir}, "Create initial commit", options);
 
-    runSyncCommand(npmCommand, ["run", "--prefix", "lib/framework64", "create-game", name, projectDir], {cwd: projectDir}, `Run create-game script from framework64 repo`, options);
+    await downloadStarterProject(projectDir, name, options)
 }
 
-function runSyncCommand(command, args, env, description, options) {
+async function downloadStarterProject(targetDir, name, options) {
+    const starterBranch = "main";
+    const starterProjectFileName = `${starterBranch}.zip`
+    const framework64StarterUrl = framework64StarterUrlBase + starterProjectFileName;
+
+    const description = `Downloading and configuring starter project from: ${framework64StarterUrl}`;
+    const tmpobj = tmp.dirSync();
+    console.log(description);
+
+    await download(framework64StarterUrl, tmpobj.name, {
+        extract: true
+    });
+    
+    const extractedDirName = `framework64-starter-${starterBranch}`;
+    const extractedRepoDir = path.join(tmpobj.name, extractedDirName);
+    extractedRepoGameDir = path.join(extractedRepoDir, "game");
+
+    const configureScriptPath = path.join(extractedRepoDir, "scripts", "ConfigureProject");
+    require(configureScriptPath)(name, extractedRepoGameDir);
+
+    fse.copySync(extractedRepoGameDir, targetDir);
+
+    console.log(`${description}: OK`);
+}
+
+function spawnSyncCommand(command, args, env, description, options) {
     if (options.verbose) {
         console.log(`Run Command: ${command} ${args.join(' ')} ${JSON.stringify(env)}`)
     }
