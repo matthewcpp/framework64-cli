@@ -4,12 +4,12 @@ const { program } = require("commander");
 
 const path = require("path");
 
-function commandCreate(directory, name) {
+async function commandCreate(directory, name) {
     const projectDir = (!!directory) ? directory : process.cwd();
     const projectName = (!!name) ? name : path.basename(process.cwd());
     
     try {
-        require("../src/create")(projectDir, projectName, program.opts());
+        await (require("../src/create"))(projectDir, projectName, program.opts());
     }
     catch(e) {
         console.log("Fatal Error:" + e);
@@ -18,7 +18,7 @@ function commandCreate(directory, name) {
 
 program
     .name("framework64-cli")
-    .version("0.0.1")
+    .version("0.0.2")
     .description("Initializes a new framework64 game");
 
 program

@@ -1,6 +1,6 @@
 {
   "name": "@matthewcpp/framework64-cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "framework64 command line utility",
   "main": "./index.js",
   "bin": {
@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/matthewcpp/framework64-cli#readme",
   "dependencies": {
-    "commander": "^9.1.0"
+    "commander": "^9.1.0",
+    "download": "^8.0.0",
+    "fs-extra": "^10.1.0",
+    "tmp": "^0.2.1"
   }
 }
