@@ -15,6 +15,7 @@ Basic usage:
 Command Argument specification:
 ```bash
 npm install -g framework64-cli
+mkdir -p  /path/to/mygame
 ./framework64-cli create /path/to/mygame mygame
 ```
 Default Arguments:
@@ -34,5 +35,6 @@ Command Options:
 |Name|Description|
 |----|-----|
 |`--init`| Initialize a git repository in the project directory.
-|`--branch <branch>`| The framework64 brach to checkout after setting up the submodule.  The default branch is `main`.
+|`--framework-branch`| The framework64 brach to checkout after setting up the submodule.  The default branch is `main`.
+|`--starter-branch`| The starter project branch to use.  The default branch is `main`.
 |`--verbose`| Enable verbose command output

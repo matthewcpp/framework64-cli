@@ -26,7 +26,8 @@ program
     .action(commandCreate);
 
 program
-    .option("--branch <branch>", "framework64 branch to checkout upon submodule initialization")
+    .option("--framework-branch <framework-branch>", "framework64 branch to checkout upon submodule initialization")
+    .option("--starter-branch <starter-branch>", "starter game branch to use")
     .option("--init", "Initialize git repository if one is not present in the project folder")
     .option("--verbose", "Enable Verbose output");
 

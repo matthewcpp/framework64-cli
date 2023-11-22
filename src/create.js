@@ -2,6 +2,7 @@ const download = require("download");
 const tmp = require('tmp');
 const fse = require("fs-extra");
 
+const fs = require("fs");
 const path = require("path");
 const {spawnSync} = require("child_process");
 
@@ -19,8 +20,14 @@ async function create(projectDir, name, options) {
         console.log(`framework64 project directory: ${projectDir}`);
     }
     else {
-        console.error(`Directory does not exist: ${projectDir}`);
-        process.exit(1);
+        if (options.init) {
+            fs.mkdirSync(projectDir);
+            console.log(`Created game directory: ${projectDir}`);
+        }
+        else {
+            console.error(`Directory does not exist: ${projectDir}`);
+            process.exit(1);
+        }
     }
 
     const gitStatusResult = spawnSync("git", ["status"], {cwd: projectDir})
@@ -40,8 +47,8 @@ async function create(projectDir, name, options) {
     spawnSyncCommand("git", ["submodule", "init"], {cwd: projectDir}, "Initialize framework64 submodule", options);
     spawnSyncCommand("git", ["add", ".gitmodules"], {cwd: projectDir}, null, options);
 
-    if (options.hasOwnProperty("branch")) {
-        spawnSyncCommand("git", ["checkout", options.branch], {cwd: submoduleDir}, `Checkout framework64 branch: ${options.branch}`, options);
+    if (options.hasOwnProperty("frameworkBranch")) {
+        spawnSyncCommand("git", ["switch", options.frameworkBranch], {cwd: submoduleDir}, `Checkout framework64 branch: ${options.frameworkBranch}`, options);
         spawnSyncCommand("git", ["add", "lib/framework64"], {cwd: projectDir}, null, options);
     }
 
@@ -51,7 +58,7 @@ async function create(projectDir, name, options) {
 }
 
 async function downloadStarterProject(targetDir, name, options) {
-    const starterBranch = "main";
+    const starterBranch = options.hasOwnProperty("starterBranch") ? options.starterBranch : "main";
     const starterProjectFileName = `${starterBranch}.zip`
     const framework64StarterUrl = framework64StarterUrlBase + starterProjectFileName;
 
