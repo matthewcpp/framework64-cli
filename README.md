@@ -14,14 +14,14 @@ Basic usage:
 ##### Usage examples:
 Command Argument specification:
 ```bash
-npm install -g framework64-cli
+npm install -g @matthewcpp/framework64-cli
 mkdir -p  /path/to/mygame
 ./framework64-cli create /path/to/mygame mygame
 ```
 Default Arguments:
 ```bash
 cd /path/to/mygame
-npm install framework64-cli
+npm install @matthewcpp/framework64-cli
 npx framework64-cli create
 ```
 
