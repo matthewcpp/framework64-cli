@@ -12,7 +12,8 @@
                 "<node_internals>/**"
             ],
             "args": [
-                "create", "D:/temp/mygame", "mygame", "--framework-branch", "main", "--starter-branch", "game-update", "--init", "--verbose"
+                //"create", "D:/temp/testgame", "testgame", "--framework-branch", "main", "--starter-branch", "main", "--init", "--verbose"
+                "create", "/Users/mlarocca/development/scratch/cli/testgame", "testgame", "--framework-branch", "main", "--starter-branch", "main", "--init", "--verbose"
             ],
             "program": "${workspaceFolder}/bin/framework64-cli.js"
         }
