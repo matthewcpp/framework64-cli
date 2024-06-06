@@ -21,7 +21,7 @@ async function create(projectDir, name, options) {
     }
     else {
         if (options.init) {
-            fs.mkdirSync(projectDir);
+            await fse.ensureDir(projectDir);
             console.log(`Created game directory: ${projectDir}`);
         }
         else {
@@ -55,6 +55,8 @@ async function create(projectDir, name, options) {
     spawnSyncCommand("git", ["commit", "-m", "Add framework64 submodule"], {cwd: projectDir}, "Create initial commit", options);
 
     await downloadStarterProject(projectDir, name, options)
+
+    spawnSyncCommand("npm", ["install"], {cwd: projectDir}, "Install npm packages", options);
 }
 
 async function downloadStarterProject(targetDir, name, options) {
