@@ -56,7 +56,7 @@ async function create(projectDir, name, options) {
 
     await downloadStarterProject(projectDir, name, options)
 
-    spawnSyncCommand("npm", ["install"], {cwd: projectDir}, "Install npm packages", options);
+    spawnSyncCommand("npm", ["install"], {cwd: projectDir, shell:true}, "Install npm packages", options);
 }
 
 async function downloadStarterProject(targetDir, name, options) {
