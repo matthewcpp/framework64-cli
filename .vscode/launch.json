@@ -13,7 +13,7 @@
             ],
             "args": [
                 //"create", "D:/temp/testgame", "testgame", "--framework-branch", "main", "--starter-branch", "main", "--init", "--verbose"
-                "create", "/Users/mlarocca/development/scratch/cli/testgame", "testgame", "--framework-branch", "main", "--starter-branch", "main", "--init", "--verbose"
+                "create", "/Users/mlarocca/development/scratch/testgame", "testgame", "--framework-branch", "main", "--starter-branch", "main", "--init", "--verbose"
             ],
             "program": "${workspaceFolder}/bin/framework64-cli.js"
         }
